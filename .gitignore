@@ -1,0 +1,16 @@
+﻿*.out
+*.exe
+.vs*
+*.ilk
+*.pdb
+Debug
+Release
+.idea
+venv
+*.sln
+test
+*.vcxproj*
+*.user
+*.dll
+SFML-2.5.1
+ImageMagick-7.0.10-Q16-HDRI
