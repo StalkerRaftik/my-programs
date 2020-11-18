@@ -3,6 +3,7 @@
 let linetimer; // Таймер с линиями, если они существуют.
 let posTop; // OY скролла
 let firstPageHeight; // высота первой страницы
+let headerHeight;
 let linesCount = 200; // Количество линий
 
 function getRandom(min, max) {
@@ -24,7 +25,8 @@ window.onscroll = function () {
 
 // Почти как main
 document.addEventListener("DOMContentLoaded", function () {
-    firstPageHeight = parseInt($(".page1").css("height")) + 80;
+    headerHeight = parseInt($("header").css("height"));
+    firstPageHeight = parseInt($(".page1").css("height")) + headerHeight;
     SetArrowsForButtons();
     SetDecorLines();
     ActivateDecorLines()
@@ -37,7 +39,7 @@ function SetScrollButtons() {
     var $page = $('html, body');
     $('a[href*="#"]').click(function () {
         $page.animate({
-            scrollTop: $($.attr(this, 'href')).offset().top - 75
+            scrollTop: $($.attr(this, 'href')).offset().top - headerHeight
         }, 400);
         return false;
     });
@@ -86,7 +88,7 @@ function SetArrowsForButtons() {
 
 // Линии на заднем плане лица страницы
 function SetDecorLines() {
-    let x = 60;
+    let x = headerHeight - 20;
     for (let i = 0; i <= linesCount; i++) {
         let line = document.createElement("div");
         line.className = "jsline";
@@ -96,48 +98,36 @@ function SetDecorLines() {
             opacity: 0;
         `,);
         x += 20;
-        if (x > firstPageHeight) x = 60;
+        if (x > firstPageHeight) x = headerHeight - 20;
         line.opacityinc = true;
         line.speed = getRandom(0.3, 0.4);
         line.scounter = 0;
         //button.arrow.setAttribute("style", "opacity: 0");
         //getComputedStyle(button.arrow).getPropertyValue("opacity")
+
         let maininfo = document.querySelector('.maininfo');
         maininfo.parentNode.insertBefore(line, maininfo);
-
     }
 }
 
 function ActivateDecorLines() {
     let lines = document.querySelectorAll(".page1 > .jsline");
-    let x = 60;
     linetimer = setInterval(() => {
         lines.forEach(line => {
-            if (x > 400) x = 60;
-
             let opacity = line.style.getPropertyValue("opacity");
             if (line.opacityinc == true) opacity = +opacity + getRandom(0.001, 0.005);
 
 
-            let str = line.style.getPropertyValue("top");
-
-            let pxnumber = "";
-            for (let i = 0; i < str.length; i++) {
-                if (!isNaN(+str[i])) {
-                    pxnumber += str[i];
-                }
-            }
-
-            let boost = +pxnumber;
+            let lineheight = parseInt(line.style.getPropertyValue("top"));
 
             line.scounter += line.speed;
             if (line.scounter > 1) {
-                boost += 1;
+                lineheight += 1;
                 line.scounter = 0;
             }
 
             line.setAttribute("style", `
-                top: ${boost}px;
+                top: ${lineheight}px;
                 left: ${line.style.getPropertyValue("left")};
                 opacity: ${opacity};
             `,);
@@ -145,9 +135,9 @@ function ActivateDecorLines() {
             if (opacity >= 0.6) line.opacityinc = false;
             else if (opacity <= 0) line.opacityinc = true;
 
-            if (boost + 1 > firstPageHeight) {
+            if (lineheight > firstPageHeight) {
                 line.setAttribute("style", `
-                    top: 40px; 
+                    top: ${headerHeight - 20}px; 
                     left: ${Math.floor(Math.random() * 70)}%;
                     opacity: 0;
                 `,);
