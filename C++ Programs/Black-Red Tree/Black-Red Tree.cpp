@@ -327,91 +327,138 @@ void DeleteElemSubfunc(tree &tree, elem* el) {
 }
 
 
-void DeleteBalance(tree &tree, elem* el) {
-    while (el != tree.head && (el == nullptr || el->color == "b")) {
-        elem* Parent = GetParent(tree, el);
-        elem* Grandparent = GetParent(tree, Parent);
-        if (el == Parent->left) {
-            elem* Brother = Parent->right;
-            // Если брат красный - 1 случай
-            if (Brother->color == "r") {
-                Brother->color = "b";
-                Parent->color = "r";
-                RotateLeft(tree, Parent->right);
-                Brother = Parent->right;
-            }
-            // Если брат черный,и у него дети черные - 2 случай
-            if ((Brother->left == nullptr || Brother->left->color == "b") && (Brother->right == nullptr || Brother->right->color == "b")) {
-                Brother->color = "r";
-                el = Parent;
-            }
-            // Если брат черный, а внутренний ребенок - красный
-            else {
-                if (Brother->left != nullptr && Brother->left->color == "r") {
-                    Brother->left->color = "b";
-                    Brother->color = "r";
-                    RotateRight(tree, Brother->left);
-                    Brother = Parent->right;
+void DeleteBalance(tree &tree, elem* el, elem* child) {
+    elem* Parent = GetParent(tree, el);
+    elem* Grandparent = GetParent(tree, Parent);
+
+    // Если был один ребенок(второй null), то он 100% красный. красим его в черный -> правим баланс.
+    if (child != nullptr && child->color == "r") child->color = "b";
+    // Изменилась черная высота, и это пизда!
+    else {
+        // Если удаленный элемент справа
+        if (el->right == nullptr || el->right == child) {
+            elem* lchild = el->left;
+            if (el->color == "r") {
+                if (el->left->color == "b") {
+                    if ((lchild->left == nullptr || lchild->left->color == "b") && (lchild->right == nullptr || lchild->right->color == "b")) {
+                        el->color = "b";
+                        lchild->color = "r";
+                    }
+                    else if (lchild->left->color == "r") {
+                        lchild->color = "r";
+                        lchild->left->color = "b";
+                        el->color = "b";
+                        RotateRight(tree, lchild);
+                    }
                 }
-                Brother->color = Parent->color;
-                Parent->color = "b";
-                if (Brother->right != nullptr) Brother->right->color = "b";
-                RotateLeft(tree, Parent->right);
-                el = tree.head;
+            }
+            // Если родитель черный
+            else {
+                if (lchild->color == "r") {
+                    // Если у правого потомка lchild черные дети
+                    if (lchild->right != nullptr && (lchild->right->left == nullptr || lchild->right->left->color == "b") && (lchild->right->right == nullptr || lchild->right->right->color == "b")) {
+                        lchild->color = "b"; // НЕ УВЕРЕН, ЭТО НЕ ТОЧНО
+                        lchild->right->color = "r";
+                        RotateRight(tree, lchild);
+                    }
+                    // Если у правого потомка lchild левый потомок красный
+                    else if (lchild->right != nullptr && lchild->right->left->color == "r") {
+                        lchild->right->left->color = "b";
+                        RotateLeft(tree, lchild->right);
+                        RotateRight(tree, el->left);
+                    }
+                }
+                // И левый потомок черный
+                else {
+                    if (lchild->right->color == "r") {
+                        lchild->right->color = "b";
+                        RotateLeft(tree, lchild->right);
+                        RotateRight(tree, el->left);
+                    }
+                    else if ((lchild->left == nullptr || lchild->left->color == "b") && (lchild->right == nullptr || lchild->right->color == "b")) {
+                        lchild->color = "r";
+                        DeleteBalance(tree, GetParent(tree, el), el);
+                    }
+                }
             }
         }
+        // Если удаленный элемент слева
         else {
-            elem* Brother = Parent->left;
-            // Если брат красный - 1 случай
-            if (Brother->color == "r") {
-                Brother->color = "b";
-                Parent->color = "r";
-                RotateRight(tree, Parent->left);
-                Brother = Parent->left;
-            }
-            // Если брат черный,и у него дети черные - 2 случай
-            if ((Brother->right == nullptr || Brother->right->color == "b") && (Brother->left == nullptr || Brother->left->color == "b")) {
-                Brother->color = "r";
-                el = Parent;
-            }
-            // Если брат черный, а внутренний ребенок - красный
-            else {
-                if (Brother->right != nullptr && Brother->right->color == "r") {
-                    Brother->right->color = "b";
-                    Brother->color = "r";
-                    RotateLeft(tree, Brother->right);
-                    Brother = Parent->left;
+            elem* rchild = el->right;
+            if (el->color == "r") {
+                if (el->right->color == "b") {
+                    if ((rchild->right == nullptr || rchild->right->color == "b") && (rchild->left == nullptr || rchild->left->color == "b")) {
+                        el->color = "b";
+                        rchild->color = "r";
+                    }
+                    else if (rchild->right->color == "r") {
+                        rchild->color = "r";
+                        rchild->right->color = "b";
+                        el->color = "b";
+                        RotateLeft(tree, rchild);
+                    }
                 }
-                Brother->color = Parent->color;
-                Parent->color = "b";
-                if (Brother->left != nullptr) Brother->left->color = "b";
-                RotateRight(tree, Parent->left);
-                el = tree.head;
             }
-        }
+            // Если родитель черный
+            else {
+                if (rchild->color == "r") {
+                    // Если у правого потомка lchild черные дети
+                    if (rchild->left != nullptr && (rchild->left->right == nullptr || rchild->left->right->color == "b") && (rchild->left->left == nullptr || rchild->left->left->color == "b")) {
+                        rchild->color = "b"; // НЕ УВЕРЕН, ЭТО НЕ ТОЧНО
+                        rchild->left->color = "r";
+                        RotateLeft(tree, rchild);
+                    }
+                    // Если у правого потомка lchild левый потомок красный
+                    else if (rchild->left != nullptr && rchild->left->right->color == "r") {
+                        rchild->left->right->color = "b";
+                        RotateRight(tree, rchild->left);
+                        RotateLeft(tree, el->right);
+                    }
+                }
+                // И левый потомок черный
+                else {
+                    if (rchild->left->color == "r") {
+                        rchild->left->color = "b";
+                        RotateRight(tree, rchild->left);
+                        RotateLeft(tree, el->right);
+                    }
+                    else if ((rchild->right == nullptr || rchild->right->color == "b") && (rchild->left == nullptr || rchild->left->color == "b")) {
+                        rchild->color = "r";
+                        DeleteBalance(tree, GetParent(tree, el), el);
+                    }
+                }
+            }
+        } 
     }
-    el->color = "b";
 }
 
 void DeleteElem(tree &tree, string info) {
     elem* ElementToDelete = FindElem(tree.head, info);
     if (ElementToDelete == nullptr) return;
+    elem* child = nullptr;
     string elclr = ElementToDelete->color;
     elem* Parent = GetParent(tree, ElementToDelete);
     if (Parent == nullptr) {
     } else {
         if (ElementToDelete->left == nullptr || ElementToDelete->right == nullptr) {
+            if (ElementToDelete->left != nullptr) child = ElementToDelete->left;
+            else if (ElementToDelete->right != nullptr) child = ElementToDelete->right;
+
             string elclr = ElementToDelete->color;
             DeleteElemSubfunc(tree, ElementToDelete);
         }
         else {
             elem* max = FindMaxElem(ElementToDelete->left);
+
+            if (max->left != nullptr) child = max->left;
+            else if (max->right != nullptr) child = max->right;
+
             Parent = GetParent(tree, max);
-            string elclr = ElementToDelete->color;
+            string elclr = max->color;
             ElementToDelete->info = max->info;
             DeleteElemSubfunc(tree, max);
         }
-        if (elclr == "b") DeleteBalance(tree, Parent);
+        if (elclr == "b") DeleteBalance(tree, Parent, child);
     } 
 }
 
@@ -435,8 +482,8 @@ int main() {
     print_Tree(tree.head, 0);
     cout << endl;
 
-    // Не работает сука ебаная
     DeleteElem(tree, "a0010");
+
 
     
     
