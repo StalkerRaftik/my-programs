@@ -3,18 +3,26 @@
 
 using namespace std;
 
+// Красно-черное древо.
+
+// Иниц. эл. древа
 struct elem {
-    elem* left = nullptr;
-    elem* right = nullptr;
-    string color = "r";
-    string info;
+    elem* left = nullptr; // Левый потомок
+    elem* right = nullptr; // Правый потомок
+    string color = "r"; // Цвет узла
+    string info; // Ключ узла
 };
 
+
+// Иниц. древа
 struct tree {
-    elem* head = nullptr;
+    elem* head = nullptr; // Корень дерева
 };
 
 
+// Рекурсивный вывод дерева
+// Формальные и входные параметры - корень дерева и уровень глубины(1) 
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_Tree(elem* p, int level) {
     if(p != nullptr)
     {
@@ -25,10 +33,17 @@ void print_Tree(elem* p, int level) {
     }
 }
 
+
+// Получить буквенную часть ключа узла
+// Формальные и входные параметры - узел 
+// Выходные данные - буквенная часть узла
 int GetChar(elem* p) {
     return int(p->info[0]);
 }
 
+// Получить числовую часть ключа узла
+// Формальные и входные параметры - узел 
+// Выходные данные - числовая часть узла
 int GetNum(elem* p) {
     string str = "";
     for (int i = 1; i < 5; i++) {
@@ -38,45 +53,62 @@ int GetNum(elem* p) {
 }
 
 
-// Центрированный обход aka симметричный(по возрастанию)
+// Центрированный или симметричный обход(по возрастанию)
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_LNR(elem* &head) {
     if (head->left != nullptr) print_LNR(head->left);
     cout << head->info << " ";
     if (head->right != nullptr) print_LNR(head->right);
 }
 
+
 // Прямой обход(кто первый тот и выводится)
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_NLR(elem*& head) {
     cout << head->info << " ";
     if (head->left != nullptr) print_NLR(head->left);
     if (head->right != nullptr) print_NLR(head->right);
 }
 
+
 // Обратный обход
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_LRN(elem*& head) {
     if (head->left != nullptr) print_NLR(head->left);
     if (head->right != nullptr) print_NLR(head->right);
     cout << head->info << " ";
 }
 
+
 // Справа налево
 // Центрированный обход aka симметричный(по возрастанию)
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_LNR_FRL(elem*& head) {
     if (head->right != nullptr) print_LNR(head->right);
     cout << head->info << " ";
     if (head->left != nullptr) print_LNR(head->left);
 }
 
+
 // Справа налево
 // Прямой обход(кто первый тот и выводится)
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_NLR_FRL(elem*& head) {
     cout << head->info << " ";
     if (head->right != nullptr) print_NLR(head->right);
     if (head->left != nullptr) print_NLR(head->left);
 }
 
+
 // Справа налево
 // Обратный обход
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 void print_LRN_FRL(elem*& head) {
     if (head->right != nullptr) print_NLR(head->right);
     if (head->left != nullptr) print_NLR(head->left);
@@ -85,6 +117,8 @@ void print_LRN_FRL(elem*& head) {
 
 
 // Поиск родителя элемента-наследника(если таковой есть)
+// Формальные и входные параметры - корень дерева
+// Выходные данные - значения элементов дерева, цвет элементов
 elem* GetParent(tree &tree, elem* child) {
     if (child == nullptr) return nullptr;
     elem* mover = tree.head;
@@ -99,6 +133,10 @@ elem* GetParent(tree &tree, elem* child) {
     return mover;
 }
 
+
+// Очистка дерева от элементов
+// Формальные и входные параметры - дерево, корень дерева
+// Выходные данные - нет
 void ClearTree(tree& tree, elem* el) {
     if (el->left != nullptr) ClearTree(tree, el->left);
     if (el->right != nullptr) ClearTree(tree, el->right);
@@ -108,6 +146,10 @@ void ClearTree(tree& tree, elem* el) {
     delete el;
 }
 
+
+// Поворот налево
+// Формальные и входные параметры - дерево, узел который совершит поворот(отца указывать не надо)
+// Выходные данные - нет
 void RotateLeft(tree &tree, elem* el) {
     elem* Parent = GetParent(tree, el);
     elem* Grandparent = GetParent(tree, Parent);
@@ -124,6 +166,9 @@ void RotateLeft(tree &tree, elem* el) {
 }
 
 
+// Поворот направо
+// Формальные и входные параметры - дерево, узел который совершит поворот(отца указывать не надо)
+// Выходные данные - нет
 void RotateRight(tree &tree, elem* el) {
     elem* Parent = GetParent(tree, el);
     elem* Grandparent = GetParent(tree, Parent);
@@ -140,6 +185,9 @@ void RotateRight(tree &tree, elem* el) {
 }
 
 
+// Поиск элемента в дереве
+// Формальные и входные параметры - корень дерева, ключ элемента который нужно найти
+// Выходные данные - нужный элемент либо nullptr, если элемента нет в древе
 elem* FindElem(elem* el, string info) {
     if (el == nullptr) return nullptr; 
 
@@ -156,6 +204,8 @@ elem* FindElem(elem* el, string info) {
 
 
 // Находит максимальный элемент в древе/поддреве.
+// Формальные и входные параметры - корень древа
+// Выходные данные - максимальный элемент древа
 elem* FindMaxElem(elem* el) {
     if (el == nullptr) return nullptr;
 
@@ -165,6 +215,10 @@ elem* FindMaxElem(elem* el) {
     return el;
 }
 
+
+// Находит минимальный элемент в древе/поддреве.
+// Формальные и входные параметры - корень древа
+// Выходные данные - минимальный элемент древа
 elem* FindMinElem(elem* el) {
     if (el == nullptr) return nullptr;
 
@@ -175,6 +229,10 @@ elem* FindMinElem(elem* el) {
 }
 
 
+// Проверяет и выравнивает баланс черной глубины древа после добавления нового элемента.
+// Вызывать эту функцию отдельно при добавлении НЕ НУЖНО. Она сама вызывается после добавления нового элемента.
+// Формальные и входные параметры - корень древа, добавленный элемент
+// Выходные данные - нет
 void CheckBalance(tree &tree, elem* el) {
     while (GetParent(tree, el) != nullptr && GetParent(tree, el)->color == "r") {
         elem* Parent = GetParent(tree, el);
@@ -195,6 +253,8 @@ void CheckBalance(tree &tree, elem* el) {
                     el = Parent;
                     RotateLeft(tree, el->right);
                 }
+                elem* Parent = GetParent(tree, el);
+                elem* Grandparent = GetParent(tree, Parent);
                 // 3 случай ВСЕГДА
                 Parent->color = "b";
                 Grandparent->color = "r";
@@ -215,18 +275,20 @@ void CheckBalance(tree &tree, elem* el) {
                     el = Parent;
                     RotateRight(tree, el->left);
                 }
-                else {
-                    Parent->color = "b";
-                    Grandparent->color = "r";
-                    RotateLeft(tree, Grandparent->right);
-                }
+                elem* Parent = GetParent(tree, el);
+                elem* Grandparent = GetParent(tree, Parent);
+                Parent->color = "b";
+                Grandparent->color = "r";
+                RotateLeft(tree, Grandparent->right);
             }
         }  
     }
     tree.head->color = "b";
 }
 
-
+// Добавляет новый элемент в древо, запускает ф-ю проверки баланса
+// Формальные и входные параметры - корень древа, ключ нового элемента
+// Выходные данные - нет
 void NewElem(tree &tree, string info) {
     if (FindElem(tree.head, info) != nullptr) {
         cout << "Element " << info << " is already exists." << endl;
@@ -294,8 +356,10 @@ void NewElem(tree &tree, string info) {
 }
 
 
-// Удаляет элемент у которого нет детей, либо ребенок только один.
-// Меняет корректно связи.
+// Удаляет элемент у которого нет детей, либо ребенок только один. Меняет корректно связи.
+// Вызывать функцию отдельно при удалении НЕ НАДО. Она сама вызывается в основной функции удаления
+// Формальные и входные параметры - корень древа, удаляемый элемент.
+// Выходные данные - нет
 void DeleteElemSubfunc(tree &tree, elem* el) {
     elem* Parent = GetParent(tree, el);
     if (Parent != nullptr) {
@@ -326,14 +390,17 @@ void DeleteElemSubfunc(tree &tree, elem* el) {
     
 }
 
-
+// Проверяет и выравнивает баланс черной глубины древа после удаления элемента
+// Вызывать функцию отдельно при удалении НЕ НАДО. Она сама вызывается в основной функции удаления
+// Формальные и входные параметры - корень древа, родитель удаленного элемента
+// Выходные данные - нет
 void DeleteBalance(tree &tree, elem* el, elem* child) {
     elem* Parent = GetParent(tree, el);
     elem* Grandparent = GetParent(tree, Parent);
 
     // Если был один ребенок(второй null), то он 100% красный. красим его в черный -> правим баланс.
     if (child != nullptr && child->color == "r") child->color = "b";
-    // Изменилась черная высота, и это пизда!
+    // Изменилась черная высота, и это плохо!
     else {
         // Если удаленный элемент справа
         if (el->right == nullptr || el->right == child) {
@@ -357,7 +424,7 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
                 if (lchild->color == "r") {
                     // Если у правого потомка lchild черные дети
                     if (lchild->right != nullptr && (lchild->right->left == nullptr || lchild->right->left->color == "b") && (lchild->right->right == nullptr || lchild->right->right->color == "b")) {
-                        lchild->color = "b"; // НЕ УВЕРЕН, ЭТО НЕ ТОЧНО
+                        lchild->color = "b";
                         lchild->right->color = "r";
                         RotateRight(tree, lchild);
                     }
@@ -367,10 +434,16 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
                         RotateLeft(tree, lchild->right);
                         RotateRight(tree, el->left);
                     }
+                    else if (lchild->right->color == "r") {
+                        lchild->color = "b";
+                        el->color = "b";
+                        RotateLeft(tree, lchild->right);
+                        RotateRight(tree, el->left);
+                    }
                 }
                 // И левый потомок черный
                 else {
-                    if (lchild->right->color == "r") {
+                    if (lchild->right != nullptr && lchild->right->color == "r") {
                         lchild->right->color = "b";
                         RotateLeft(tree, lchild->right);
                         RotateRight(tree, el->left);
@@ -378,6 +451,10 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
                     else if ((lchild->left == nullptr || lchild->left->color == "b") && (lchild->right == nullptr || lchild->right->color == "b")) {
                         lchild->color = "r";
                         DeleteBalance(tree, GetParent(tree, el), el);
+                    }
+                    else if (lchild->left != nullptr && lchild->left->color == "r") {
+                        lchild->left->color = "b";
+                        RotateRight(tree, lchild);
                     }
                 }
             }
@@ -387,15 +464,24 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
             elem* rchild = el->right;
             if (el->color == "r") {
                 if (el->right->color == "b") {
+                    // Есть a0014
                     if ((rchild->right == nullptr || rchild->right->color == "b") && (rchild->left == nullptr || rchild->left->color == "b")) {
                         el->color = "b";
                         rchild->color = "r";
                     }
-                    else if (rchild->right->color == "r") {
+                    // есть a0010
+                    else if (rchild->right != nullptr && rchild->right->color == "r") {
                         rchild->color = "r";
                         rchild->right->color = "b";
                         el->color = "b";
                         RotateLeft(tree, rchild);
+                    }
+                    // есть !a0013
+                    else if (rchild->left->color == "r") {
+                        rchild->color = "b";
+                        el->color = "b";
+                        RotateRight(tree, rchild->left);
+                        RotateLeft(tree, el->right);
                     }
                 }
             }
@@ -403,12 +489,14 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
             else {
                 if (rchild->color == "r") {
                     // Если у правого потомка lchild черные дети
+                    // да a0008
                     if (rchild->left != nullptr && (rchild->left->right == nullptr || rchild->left->right->color == "b") && (rchild->left->left == nullptr || rchild->left->left->color == "b")) {
-                        rchild->color = "b"; // НЕ УВЕРЕН, ЭТО НЕ ТОЧНО
+                        rchild->color = "b";
                         rchild->left->color = "r";
                         RotateLeft(tree, rchild);
                     }
                     // Если у правого потомка lchild левый потомок красный
+                    // да !!a0013. По-своему балансирует, не так как визуализатор. Тем не менее баланс высот сохраняется
                     else if (rchild->left != nullptr && rchild->left->right->color == "r") {
                         rchild->left->right->color = "b";
                         RotateRight(tree, rchild->left);
@@ -417,14 +505,21 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
                 }
                 // И левый потомок черный
                 else {
-                    if (rchild->left->color == "r") {
+                    //
+                    if (rchild->left != nullptr && rchild->left->color == "r") {
                         rchild->left->color = "b";
                         RotateRight(tree, rchild->left);
                         RotateLeft(tree, el->right);
                     }
+                    // Есть !!a0008
                     else if ((rchild->right == nullptr || rchild->right->color == "b") && (rchild->left == nullptr || rchild->left->color == "b")) {
                         rchild->color = "r";
                         DeleteBalance(tree, GetParent(tree, el), el);
+                    }
+                    // Есть !!a0010 (зеркально)
+                    else if (rchild->right != nullptr && rchild->right->color == "r") {
+                        rchild->right->color = "b";
+                        RotateLeft(tree, rchild);
                     }
                 }
             }
@@ -432,6 +527,9 @@ void DeleteBalance(tree &tree, elem* el, elem* child) {
     }
 }
 
+// Основная функция удаления элемента из дерева. Удаляет элемент, вызывает функцию балансировки древа.
+// Формальные и входные параметры - древо, ключ удаляемого элемента
+// Выходные данные - нет
 void DeleteElem(tree &tree, string info) {
     elem* ElementToDelete = FindElem(tree.head, info);
     if (ElementToDelete == nullptr) return;
@@ -474,7 +572,14 @@ int main() {
     NewElem(tree, "a0007");
     NewElem(tree, "a0012");
     NewElem(tree, "a0014");
-    NewElem(tree, "a0016");
+    NewElem(tree, "b0001");
+
+    NewElem(tree, "a0013");
+    NewElem(tree, "a0015");
+
+    NewElem(tree, "a0099");
+    NewElem(tree, "a0055");
+
 
     NewElem(tree, "a0010");
 
@@ -482,10 +587,7 @@ int main() {
     print_Tree(tree.head, 0);
     cout << endl;
 
-    DeleteElem(tree, "a0010");
-
-
-    
+    DeleteElem(tree, "a0008");
     
     cout << "-------------" << endl;
     print_Tree(tree.head, 0);
