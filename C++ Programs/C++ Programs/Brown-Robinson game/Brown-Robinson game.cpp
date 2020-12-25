@@ -5,7 +5,7 @@
 #include <cstddef>
 using namespace std;
 
-const int m = 4; // Стратегии игрока B (ширина)
+const int m = 3; // Стратегии игрока B (ширина)
 const int n = 3; // Стратегии игрока A (высота)
 const int Iterations = 200; // Количество итераций игры
 
