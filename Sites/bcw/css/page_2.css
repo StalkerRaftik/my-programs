@@ -1,0 +1,215 @@
+@media all and (min-width: 1100px) {
+    .main > .page2 {
+        position: relative;
+    
+        height: 680px;
+        margin-top: 0px;
+        background-color: #0e0d0d;
+    }
+}
+@media not all and (min-width: 1100px) {
+    .main > .page2 {
+        position: relative;
+    
+        height: auto;
+        padding-bottom: 20px;
+        margin-top: 0px;
+        background-color: #0e0d0d;
+    }
+}
+
+
+
+
+@media all and (min-width: 1100px) {
+    .p2border {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        background: linear-gradient(to right, #9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#9B5D00 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+    #border2 {
+        background: linear-gradient(to right, #590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#590000 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+    #border3 {
+        background: linear-gradient(to right, #007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#007004 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+}
+@media not all and (min-width: 1100px) {
+    .p2border {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        background: linear-gradient(to right, #9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #9B5D00 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#9B5D00 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+    #border2 {
+        background: linear-gradient(to right, #590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #590000 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#590000 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+    #border3 {
+        background: linear-gradient(to right, #007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, #007004 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(#007004 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top, right, bottom, left;
+        background-repeat: repeat-x, repeat-y;
+        background-size: 25px 2px, 2px 25px;
+    }
+}
+
+.main > .page2 > h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-style: normal;
+    font-weight: 100;
+    font-size: 36px;
+
+    padding-top: 20px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+
+    text-align: center;
+    width: 100%;
+
+    color: #00EB42;
+}
+.main > .page2 > .amline {
+    width: 165px;
+    height: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #00EB42;
+}
+
+.main > .page2 .p2header {
+    font-family: 'Roboto Mono', monospace;
+    font-style: normal;
+    font-weight: 100;
+    font-size: 28px;
+
+    color: #00EB42;
+
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+.main > .page2 > div p {
+    font-family: 'Gotham';
+    font-style: normal;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+
+    color: #FFFFFF;
+
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-top: 25px;
+}
+
+
+@media all and (min-width: 1100px) {
+    .main > .page2 > .aboutme {
+        position: absolute;
+
+        top: 15%;
+        left: calc(38% - 350px/2);
+        width: 350px;
+        height: 540px;
+    
+        background: #191919;
+        
+    
+    }
+
+    .main > .page2 > .exp {
+        position: absolute;
+
+        top: calc(15% + 220px);
+        left: calc(38% - 350px/2 + 370px);
+        width: 350px;
+        height: 340px;
+    
+        background: #191919;
+    }
+
+    .main > .page2 > .knowledge {
+        position: absolute;
+
+        top: calc(15%);
+        left: calc(38% - 350px/2 + 450px);
+        width: 350px;
+        height: 200px;
+
+        background: #191919;
+        
+    }
+}
+@media not all and (min-width: 1100px) {
+    .main > .page2 > .aboutme {
+        position: relative;
+        
+        width: 350px;
+        height: 540px;
+        margin-left: auto;
+        margin-right: auto;
+    
+        background: #191919;
+        
+    
+    }
+
+    .main > .page2 > .exp {
+        position: relative;
+
+        width: 350px;
+        height: 340px;
+        margin-left: auto;
+        margin-right: auto;
+    
+        background: #191919;
+    }
+
+    .main > .page2 > .knowledge {
+        position: relative;
+
+        width: 350px;
+        height: 200px;
+        margin-left: auto;
+        margin-right: auto;
+    
+        background: #191919;
+        
+    }
+}
+
+.main > .page2 #amheader {color: #FFB800;}
+
+
+.main > .page2 #expheader {
+    color: #FF0000;
+    margin-top: 10px;
+}
+.main > .page2 > .exp p {margin-top: 7px;}
+
+
+.main > .page2 > .knowledge p {margin-top: 7px;}
+
+.main > .page2 #knheader {
+    color: #00EB42;
+    margin-top: 10px;
+}
