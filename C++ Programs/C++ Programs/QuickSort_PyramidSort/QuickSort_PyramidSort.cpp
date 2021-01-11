@@ -8,13 +8,14 @@
 using namespace std;
 
 
-
+// Иниц. элементов списка
 struct listelem {
 	listelem* pred = nullptr; //Ссылка на следущий элемент списка
 	int key = 0; // Информация элемента
-	int pos = 0;
+	int pos = 0; // Позиция элемента в списке
 	listelem* next = nullptr; //Ссылка на следущий элемент списка
 };
+
 
 // Иниц. дин. списка
 struct list {
@@ -22,6 +23,10 @@ struct list {
 	listelem* tail = nullptr; // Последний элемент (хвост) списка
 };
 
+
+// Добавляет новый элемент в список
+// Формальные и входные параметры - список, ключ нового элемента
+// Выходные данные - нет
 void NewElem(list& l, int key)
 {
 	listelem* elem = new listelem();
@@ -37,6 +42,10 @@ void NewElem(list& l, int key)
 	l.tail = elem;
 }
 
+
+// Найти элемент по позиции
+// Формальные и входные параметры - список, позиция элемента
+// Выходные данные - нужный элемент либо nullptr, если элемента нет в списке
 listelem* GetElemByPos(list& l, int pos) {
 	listelem* mover = l.head;
 	while (mover != nullptr) {
@@ -46,6 +55,10 @@ listelem* GetElemByPos(list& l, int pos) {
 	return nullptr;
 }
 
+
+// Очистка списка от элементов
+// Формальные и входные параметры - список
+// Выходные данные - нет
 void ClearList(list& l) {
 	listelem* mover = l.head;
 	while (mover != nullptr) {
@@ -57,6 +70,10 @@ void ClearList(list& l) {
 	l.tail = nullptr;
 }
 
+
+// Получение информации об элементах списка
+// Формальные и входные параметры - список
+// Выходные данные - строка с данными
 string GetListInfo(list l)
 {
 	listelem* mover = l.head;
@@ -69,18 +86,27 @@ string GetListInfo(list l)
 	return result;
 }
 
+
+// Получение длины списка
+// Формальные и входные параметры - список
+// Выходные данные - длина списка
 int GetListLength(list l) {
 	return l.tail->pos + 1;
 }
 
 
 // Проверка списка на пустоту
+// Формальные и входные параметры - список
+// Выходные данные - нет
 bool chk_empty(list l)
 {
 	return (l.head == NULL && l.tail == NULL);
 }
 
 
+// Сортировка списка алгоритмом "Быстрая сортировка"
+// Формальные и входные параметры - список
+// Выходные данные - нет
 void QuickSort(list& list) {
 	float time = (float)clock();
 	int comp = 0;
@@ -114,13 +140,11 @@ void QuickSort(list& list) {
 			if (l <= r) {
 				listelem* lel = GetElemByPos(list, l);
 				listelem* rel = GetElemByPos(list, r);
-				comp++;
-				if (lel->key != rel->key) {
-					int buff = lel->key;
-					lel->key = rel->key;
-					rel->key = buff;
-					perm++;
-				}
+
+				int buff = lel->key;
+				lel->key = rel->key;
+				rel->key = buff;
+				perm++;
 				r--;
 				l++;
 			}
@@ -138,6 +162,10 @@ void QuickSort(list& list) {
 	cout << "Time spent: " << ((float)clock() - (float)time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 }
 
+
+// Построение списка в виде бинарного древа, где n - родитель, 2n+1 - левый потомок меньше родителя, 2n+2 - правый потомок больше родителя
+// Формальные и входные параметры - список
+// Выходные данные - true, если правильно составлен, false в ином случае
 bool TreeCheck(list& l) {
 	listelem* mover = l.head;
 	while (mover != nullptr) {
@@ -157,6 +185,11 @@ bool TreeCheck(list& l) {
 	return true;
 }
 
+
+// Построение списка в виде бинарного древа, где n - родитель, 2n+1 - левый потомок меньше родителя, 2n+2 - правый потомок больше родителя
+// Функция вызывается в процедуре пирамидальной сортировки. НЕ ТРЕБУЕТ самостоятельного вызова
+// Формальные и входные параметры - список, узел, длина списка, счетчик сравнений, счетчик перестановок
+// Выходные данные - нет
 void Heapify(list& l, listelem* el, int size, int& comp, int& perm)
 {
 
@@ -197,6 +230,10 @@ void Heapify(list& l, listelem* el, int size, int& comp, int& perm)
 	}
 }
 
+
+// Сортировка списка алгоритмом "Пирамидальная сортировка(сортировка кучей)"
+// Формальные и входные параметры - список
+// Выходные данные - нет
 void HeapSort(list& l)
 {
 	float time = (float)clock();
@@ -211,14 +248,11 @@ void HeapSort(list& l)
 	{
 		listelem* elem = GetElemByPos(l, i);
 		// Перемещаем текущий корень в конец
-		comp++;
-		if (l.head->key != elem->key) {
-			int buffer = elem->key;
-			elem->key = l.head->key;
-			l.head->key = buffer;
+		int buffer = elem->key;
+		elem->key = l.head->key;
+		l.head->key = buffer;
 
-			perm++;
-		}
+		perm++;
 
 		// вызываем процедуру heapify на уменьшенной куче
 		Heapify(l, l.head, i, comp, perm);
