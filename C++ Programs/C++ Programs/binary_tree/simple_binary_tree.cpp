@@ -288,14 +288,13 @@ void print_NeterSqrt(elem*& head) {
 
 int main() {
     setlocale(LC_ALL, "Russian");
-
     int input;
     tree tree;
     bool end = false;
     int keysamount = 7;
 
     while (end != true) {
-        cout << "Что вы хотите сделать?\n1 - добавить новый элемент\n2 - удалить элемент\n3 - очистить дерево\n4 - вывести дерево\n5 - найти элемент\n6 - найти нетерминальные вершины дерева, квадратный корень которых (по модулю) целое число.\n7 - выйти\n";
+        cout << "1 - добавить новый элемент\n2 - удалить элемент\n3 - очистить дерево\n4 - вывести дерево\n5 - найти элемент\n6 - найти минимальный элемент дерева.\n7 - выйти\n";
         int userkey = -1;
         cin >> userkey;
         while (userkey < 1 || userkey > keysamount) {
@@ -343,8 +342,10 @@ int main() {
             cout << endl << FindElem(tree.head, input) << endl;
             break;
         case 6:
-            cout << "\nСписок подходящих чисел в древе:\n";
-            print_NeterSqrt(tree.head);
+            cout << "\nАдрес в оперативной памяти минимального элемента в дереве: ";
+            cout << FindMinElem(tree.head);
+            cout << "\nЕго значение - ";
+            cout << FindMinElem(tree.head)->info;
             cout << endl;
             break;
         case 7:

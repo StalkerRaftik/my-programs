@@ -1,0 +1,2 @@
+Sort type:          Data type:          Elem. amount:       Time(s):            Comparsions:        Permutations:       
+BubbleSort          Int Array           5000                0                   12497500            6262798             

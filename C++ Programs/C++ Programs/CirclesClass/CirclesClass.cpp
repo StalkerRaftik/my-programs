@@ -49,7 +49,7 @@ int main()
     vector<bool> CircleFreeze;
     vector<ResultData> Result;
 
-    for (int i = 0; i < 3; i++) {
+    /*for (int i = 0; i < 3; i++) {
         CircleShape shape(15.0f);
         shape.setOrigin(shape.getRadius(), shape.getRadius());
         shape.setPosition( (rand() % SIZE), (rand()%SIZE) );
@@ -58,7 +58,25 @@ int main()
         shape.setFillColor(Color(0, 0, 0, 0));
         Circles.push_back(shape);
         CircleFreeze.push_back(false);
-    }
+    }*/
+
+    CircleShape shape(15.0f);
+    shape.setOrigin(shape.getRadius(), shape.getRadius());
+    shape.setPosition(0, 0);
+    shape.setOutlineColor(Color(255, 255, 255));
+    shape.setOutlineThickness(2);
+    shape.setFillColor(Color(0, 0, 0, 0));
+    Circles.push_back(shape);
+    CircleFreeze.push_back(false);
+
+    CircleShape shape2(15.0f);
+    shape2.setOrigin(shape2.getRadius(), shape2.getRadius());
+    shape2.setPosition(599, 599);
+    shape2.setOutlineColor(Color(255, 255, 255));
+    shape2.setOutlineThickness(2);
+    shape2.setFillColor(Color(0, 0, 0, 0));
+    Circles.push_back(shape2);
+    CircleFreeze.push_back(false);
 
     int msgtimer = 0;
     while (window.isOpen())

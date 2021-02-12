@@ -84,14 +84,19 @@ void DijkstraAlghoritm(int from, int to, vector<way> ways, const int nodesAmount
         PrevFixedNode = NewFixedNode;
         fixedNodes[i] = NewFixedNode;
         if (NewFixedNode == to) {
-            cout << "Минимальный путь от " + to_string(from + 1) + " до " + to_string(to + 1) + " равен " + to_string(dkArr[i][NewFixedNode]) << endl;
-            string sWay = to_string(to+1);
-            int mover = to;
-            while (ArrivedFrom[mover] != -1) {
-                sWay = (to_string(ArrivedFrom[mover]+1) + "-->") + sWay;
-                mover = ArrivedFrom[mover];
+            if (dkArr[i][NewFixedNode] == INT_MAX) {
+                cout << "Пути от " + to_string(from + 1) + " до " + to_string(to + 1) + " нет!";
             }
-            cout << sWay << endl;
+            else {
+                cout << "Минимальный путь от " + to_string(from + 1) + " до " + to_string(to + 1) + " равен " + to_string(dkArr[i][NewFixedNode]) << endl;
+                string sWay = to_string(to + 1);
+                int mover = to;
+                while (ArrivedFrom[mover] != -1) {
+                    sWay = (to_string(ArrivedFrom[mover] + 1) + "-->") + sWay;
+                    mover = ArrivedFrom[mover];
+                }
+                cout << sWay << endl;
+            }
         }
     }
 }
@@ -101,34 +106,55 @@ int main()
     setlocale(LC_ALL, "Russian");
 
     int nodesAmount = 0;
-    cout << "Введите количество узлов: ";
-    cin >> nodesAmount; cout << endl;
 
     vector<way> ways; 
-
+    int end = false;
     int input = 0;
-    for (int fNode = 0; fNode < nodesAmount; fNode++) {
-        for (int sNode = 0; sNode < nodesAmount; sNode++) {
-            if (fNode == sNode) continue;
-            if (sNode < fNode) continue; // Опционально. Если хотите чтобы путь был только в 1 сторону - вперед.
-            cout << "Есть ли путь от " + to_string(fNode+1) + " до " + to_string(sNode+1) + "?\n1 - да\n2 - нет\n";
-            cin >> input;   
-            if (input == 1) {
-                cout << "\nКакая длина пути? ";
-                cin >> input;
-                way way;
-                way.from = fNode;
-                way.to = sNode;
-                way.len = input;
-                ways.push_back(way);
+    int wantnewgraph = true;
+    while (!end) {
+        if (wantnewgraph) {
+            ways.clear();
+            wantnewgraph = false;
+            cout << "Введите количество узлов графа: ";
+            cin >> nodesAmount; cout << endl;
+
+
+            for (int fNode = 0; fNode < nodesAmount; fNode++) {
+                for (int sNode = 0; sNode < nodesAmount; sNode++) {
+                    if (fNode == sNode) continue;
+                    //if (sNode < fNode) continue; // Опционально. Если хотите чтобы путь был только в 1 сторону - вперед.
+                    cout << "Есть ли путь от " + to_string(fNode + 1) + " до " + to_string(sNode + 1) + "?\n1 - да\n2 - нет\n";
+                    cin >> input;
+                    if (input == 1) {
+                        cout << "\nКакая длина пути? ";
+                        cin >> input;
+                        way way;
+                        way.from = fNode;
+                        way.to = sNode;
+                        way.len = input;
+                        ways.push_back(way);
+                    }
+                }
             }
         }
-    }
 
-    for (int i = 0; i < ways.size(); i++) {
-        cout << ways[i].from << " " << ways[i].to << " " << ways[i].len << endl;
+        int from, to;
+        cout << "От какого узла мы пойдем: ";
+        cin >> from;
+        cout << "До какого узла мы пойдем: ";
+        cin >> to;
+        DijkstraAlghoritm(from - 1, to - 1, ways, nodesAmount);
+
+        cout << "Хотите продолжить?\n1 - взять этот же граф\n2 - указать новый граф\n3 - закончить программу\n";
+        cin >> input;
+        switch (input) {
+        case 2:
+            wantnewgraph = true;
+            break;
+        case 3:
+            end = true;
+            break;
+        }
     }
-    cout << endl;
-    DijkstraAlghoritm(0, 5, ways, nodesAmount);
 }
 

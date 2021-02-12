@@ -350,8 +350,13 @@ void NewElem(tree &tree, string info) {
             }
             
         }
+        cout << "-------------" << endl;
+        print_Tree(tree.head, 0);
+        cout << endl;
         CheckBalance(tree, newelem);
-        
+        cout << "-----Done:------" << endl;
+        print_Tree(tree.head, 0);
+        cout << endl;
     }
 }
 
@@ -564,7 +569,9 @@ void DeleteElem(tree &tree, string info) {
 
 
 int main() {
+    setlocale(LC_ALL, "Russian");
     tree tree;
+    
 
     NewElem(tree, "a0010");
     NewElem(tree, "a0009");
@@ -574,23 +581,36 @@ int main() {
     NewElem(tree, "a0014");
     NewElem(tree, "b0001");
 
+    /*NewElem(tree, "a0013");
+    NewElem(tree, "a0015");*/
+
+    //NewElem(tree, "a0099");
+    //NewElem(tree, "a0055");
+
+
     NewElem(tree, "a0013");
-    NewElem(tree, "a0015");
-
-    NewElem(tree, "a0099");
-    NewElem(tree, "a0055");
-
-
-    NewElem(tree, "a0010");
 
     cout << "-------------" << endl;
     print_Tree(tree.head, 0);
     cout << endl;
 
-    DeleteElem(tree, "a0008");
+    DeleteElem(tree, "a0014");
     
     cout << "-------------" << endl;
     print_Tree(tree.head, 0);
     cout << endl;
 
+    cout << "Max elem: " << FindMaxElem(tree.head)->info << endl;
+    cout << "Min elem: " << FindMinElem(tree.head)->info << endl;
+    cout << "in-order, in-order right-to-left: " << endl;
+    print_LNR(tree.head);
+    cout << endl;
+    print_LNR_FRL(tree.head);
+    cout << endl;
+    cout << "pre-order: " << endl;
+    print_NLR(tree.head);
+    cout << endl;
+    cout << "post-order: " << endl;
+    print_LRN(tree.head);
+    cout << endl;
 }
