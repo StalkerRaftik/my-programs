@@ -3,7 +3,7 @@ from telebot import types
 import random
 import vk_api
 
-# vk_session = vk_api.VkApi('+79990593881', 'dYdcTPGSb3ZVeDH')
+# vk_session = vk_api.VkApi('+79990593881', 'XXXXXXXXXXXXXXXXX')
 # vk_session.auth()
 #
 # vk = vk_session.get_api()
