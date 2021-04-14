@@ -84,6 +84,8 @@ namespace _26032021_SpaceWars
         
         Bitmap IntruderPng = Properties.Resources.intruder_removebg_preview;
         Bitmap RocketPng = Properties.Resources.rocket_removebg_preview;
+        Bitmap HeartPng = Properties.Resources.plyheart;
+        
         public void GameInit()
         {
             for (int i = 0; i < 50; i++)
@@ -148,13 +150,17 @@ namespace _26032021_SpaceWars
             g.DrawImage(RocketPng, ply.rect.X, ply.rect.Y);
             
 
+            for (int i = 0; i <= ply.hp; i++)
+            {
+                g.DrawImage(HeartPng, 10 + 30*i, 10);
+            }
         }
 
         //-----------------------------------------------
         //------Функция обработки логики пришельцев------
         //-----------------------------------------------
         long IntruderDelay = 0;
-        long IntrudersShootingDelay = 0;
+        long GiantShipShootDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 20000;
         public async Task IntrudersLogicProcessing()
         {
             Debug.Text = Intruders.Count.ToString();
@@ -174,7 +180,7 @@ namespace _26032021_SpaceWars
 
                 // Качание линии пришельцев с помощью синуса, спуск
                 int addx;
-                if (Math.Sin(DateTimeOffset.Now.ToUnixTimeMilliseconds() * 0.0015)  > 0)
+                if (Math.Sin((DateTimeOffset.Now.ToUnixTimeMilliseconds()+Intruders[i].SinAdd) * 0.0015)  > 0)
                     addx = 1;
                 else
                     addx = -1;
@@ -193,7 +199,8 @@ namespace _26032021_SpaceWars
                         IntruderRect.X + IntruderRect.Width/2, 
                         IntruderRect.Y + IntruderRect.Height / 2,
                         6, 15,
-                        new SolidBrush(Color.Purple)
+                        new SolidBrush(Color.Purple),
+                        8
                     ));
                 }
             }
@@ -211,12 +218,19 @@ namespace _26032021_SpaceWars
 
                 int specialAttack = Random.Next(15);
                 int doubleAttack = Random.Next(3);
-                if (doubleAttack == 0) IntruderDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 3000 + Random.Next(1000);
+                int SecondWaveSinRandom = Random.Next(10000);
+                if (doubleAttack == 0) {
+                    IntruderDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 3000 + Random.Next(1000);
+                    
+                }
                 for (int i = 0; i < IntrudersCount; i++)
                 {
                     if (i != space)
                     {
-                        Intruder Intruder = new Intruder(leftPadding -30 + i * 96 + 10 * i, -70, 96, 79, 2000 + Random.Next(3000));
+                        Intruder Intruder = new Intruder(leftPadding -30 + i * 96 + 10 * i,
+                            -70, 96, 79, 2000 + Random.Next(3000),
+                            DateTimeOffset.Now.ToUnixTimeMilliseconds()
+                        );
                         if (specialAttack != 0)
                         {
                             Intruder.ReloadingMilis = DateTimeOffset.Now.ToUnixTimeMilliseconds() + Intruder.ReloadTime / (1 + Random.Next(3));
@@ -225,7 +239,12 @@ namespace _26032021_SpaceWars
 
                         if (doubleAttack == 0)
                         {
-                            Intruder = new Intruder(leftPadding + 60 - 30 + i * 96 + 10 * i, -200, 96, 79, 2000 + Random.Next(3000));
+                            Intruder = new Intruder(
+                                leftPadding + 60 - 30 + i * 96 + 10 * i,
+                                -200, 96, 79, 2000 + Random.Next(3000),
+                                DateTimeOffset.Now.ToUnixTimeMilliseconds() + SecondWaveSinRandom
+                            );
+
                             if (specialAttack != 0)
                             {
                                 Intruder.ReloadingMilis = DateTimeOffset.Now.ToUnixTimeMilliseconds() + Intruder.ReloadTime / (1 + Random.Next(3));
@@ -235,11 +254,19 @@ namespace _26032021_SpaceWars
                     }
                 }
             }
+
+            // Создание выстрела гигантского пришельца
+            if (GiantShipShootDelay < DateTimeOffset.Now.ToUnixTimeMilliseconds())
+            {
+                GiantShipShootDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 10000;
+
+                HProj.Add(new Projectile(ply.rect.X + ply.rect.Width/2 - 5, -20, 10, 40, new SolidBrush(Color.Purple), 16));
+            }
         }
 
         //-----------------------------------------------
         //------Функция обработки проджектайлов----------
-        //-----------------------------------------------
+        //----------------и коллизий---------------------
         public async Task ProjectileProcessing()
         {
             //-------Выстрелы игрока-------
@@ -247,6 +274,7 @@ namespace _26032021_SpaceWars
             {
                 var projrect = Proj[i].rect;
 
+                // Коллизия
                 var destroyed = false;
                 var rectForCollisions = projrect;
                 rectForCollisions.Y = rectForCollisions.Y + 40;
@@ -264,6 +292,7 @@ namespace _26032021_SpaceWars
                     }
                 }
 
+                // Движение
                 if (!destroyed)
                 {
                     projrect.Y = projrect.Y - 8;
@@ -280,6 +309,8 @@ namespace _26032021_SpaceWars
             for (int i = 0; i < HProj.Count; i++)
             {
                 Rectangle proj = HProj[i].rect;
+
+                // Коллизия
                 var destroyed = false;
                 if (proj.IntersectsWith(ply.rect))
                 {
@@ -291,10 +322,25 @@ namespace _26032021_SpaceWars
                     if (ply.hp < 0) GameOver(); 
                 }
 
+                // Движение
                 if (!destroyed)
                 {
-                    proj.Y += 8;
+                    proj.Y += HProj[i].speed;
                     HProj[i].rect = proj;
+                }
+            }
+
+            // Коллизия игрока с инопланетянами
+            for (int i = 0; i < Intruders.Count; i++)
+            {
+                Rectangle rect = Intruders[i].rect;
+                if (rect.IntersectsWith(ply.rect))
+                {
+                    Intruders.RemoveAt(i);
+
+                    ply.hp = ply.hp - 1;
+
+                    if (ply.hp < 0) GameOver();
                 }
             }
         }
@@ -345,9 +391,9 @@ namespace _26032021_SpaceWars
                             if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > gunLongReload)
                             {
                                 mag--;
-                                Proj.Add(new Projectile(pos.X + ply.rect.Width / 2, pos.Y, 3, 15, new System.Drawing.SolidBrush(Color.Red)));
+                                Proj.Add(new Projectile(pos.X + ply.rect.Width / 2, pos.Y, 3, 15, new System.Drawing.SolidBrush(Color.Red), -8));
                                 gunReload = DateTimeOffset.Now.ToUnixTimeMilliseconds() + ReloadTime;
-
+                                
 
                                 if (mag == 0)
                                 {
@@ -372,7 +418,7 @@ namespace _26032021_SpaceWars
         long gunReload = 0;
         long gunLongReload = 0;
         int mag = 10;
-        long IntrudersLogicDelay = 0;
+        long HeavyLogicDelay = 0;
         static object LogickLocker = new object();
         static object DrawLocker = new object();
         private async void Background_Paint(object sender, PaintEventArgs e)
@@ -406,9 +452,9 @@ namespace _26032021_SpaceWars
                 Tasks.Add(ProjectileProcessingTask);
             }
 
-            if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > IntrudersLogicDelay)
+            if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > HeavyLogicDelay)
             {
-                IntrudersLogicDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 32;
+                HeavyLogicDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 32;
 
                 var IntrudersLogicProcessingTask = IntrudersLogicProcessing();
                 Tasks.Add(IntrudersLogicProcessingTask);
@@ -444,22 +490,25 @@ namespace _26032021_SpaceWars
 
     class Projectile : GameObject
     {
-        public Projectile(int X, int Y, int WIDTH, int HEIGHT, System.Drawing.SolidBrush BRUSH) : base(X, Y, WIDTH, HEIGHT)
+        public Projectile(int X, int Y, int WIDTH, int HEIGHT, System.Drawing.SolidBrush BRUSH, int SPEED) : base(X, Y, WIDTH, HEIGHT)
         {
             rect = new Rectangle(X, Y, WIDTH, HEIGHT);
             brush = BRUSH;
+            speed = SPEED;
         }
-        public System.Drawing.SolidBrush brush { get; set; }
+        public SolidBrush brush { get; set; }
+        public int speed { get; set; }
     }
 
     class Intruder : GameObject
     {
-        public Intruder(int X, int Y, int WIDTH, int HEIGHT, int reloadTime) : base(X, Y, WIDTH, HEIGHT)
+        public Intruder(int X, int Y, int WIDTH, int HEIGHT, int reloadTime, long SINADDITIONAL) : base(X, Y, WIDTH, HEIGHT)
         {
             rect = new Rectangle(X, Y, WIDTH, HEIGHT);
             ReloadTime = reloadTime;
+            SinAdd = SINADDITIONAL;
         }
-
+        public long SinAdd { get; set; }
         public int ReloadTime { get; set; }
         public long ReloadingMilis { get; set; }
     }

@@ -299,6 +299,8 @@ namespace Paint
                     textbox.Name = "Text";
                     textbox.Size = new System.Drawing.Size(100, 100);
                     textbox.TabIndex = 11;
+                    Font font = new Font(new FontFamily("Arial"), 10, FontStyle.Italic);
+                    textbox.Font = font;
                     this.Controls.Add(textbox);
                     textbox.BringToFront();
                     break;

@@ -39,7 +39,7 @@
             // Debug
             // 
             this.Debug.AutoSize = true;
-            this.Debug.Location = new System.Drawing.Point(44, 34);
+            this.Debug.Location = new System.Drawing.Point(-3, 656);
             this.Debug.Name = "Debug";
             this.Debug.Size = new System.Drawing.Size(42, 17);
             this.Debug.TabIndex = 3;
@@ -71,7 +71,7 @@
             this.PauseLabel.ForeColor = System.Drawing.SystemColors.ActiveBorder;
             this.PauseLabel.Location = new System.Drawing.Point(475, 302);
             this.PauseLabel.Name = "PauseLabel";
-            this.PauseLabel.Size = new System.Drawing.Size(304, 52);
+            this.PauseLabel.Size = new System.Drawing.Size(298, 51);
             this.PauseLabel.TabIndex = 4;
             this.PauseLabel.Text = "Enter - начать";
             // 
