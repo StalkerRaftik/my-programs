@@ -122,9 +122,11 @@ function DeleteLoot()
 end
 
 function IsPlayersAround(pos, radius)
-    radius = radius or 2000
-    for _,ent in pairs(ents.FindInSphere( pos, radius)) do
-        if ent:IsPlayer() then return true end 
+    radius = radius or 4000
+    for _,ply in pairs(player.GetAll()) do
+        if pos:DistToSqr(ply:GetPos()) < radius*radius then 
+            return true
+        end
     end
     return false
 end
@@ -134,14 +136,36 @@ timer.Create("rp.LootSystem.SpawnNewRadiation", 1800, 0, function()
 end)
 
 concommand.Add("lootTest", function( ply, cmd, args )
+    ply:ChatPrint("Лут на полу:")
+    local successCheck = true
     for type, typetbl in pairs(rp.LootSystem.RandomLoot) do
         local summarychance = 0
         for _, variant in pairs(typetbl.loot) do
             summarychance = summarychance + variant.chance
         end
         if summarychance ~= 100 then
+            successCheck = false
             ply:ChatPrint( type .. " имеет " .. summarychance .. " суммарных процентов шанса")
         end
+    end
+    if successCheck == true then
+        ply:ChatPrint("Лут на полу успешно прошел проверку")
+    end
+
+    ply:ChatPrint("Лут в ящиках:")
+    local successCheck = true
+    for type, typetbl in pairs(rp.LootSystem.RandomLootContainers) do
+        local summarychance = 0
+        for _, variant in pairs(typetbl.loot) do
+            summarychance = summarychance + variant.chance
+        end
+        if summarychance ~= 100 then
+            successCheck = false
+            ply:ChatPrint( type .. " имеет " .. summarychance .. " суммарных процентов шанса")
+        end
+    end
+    if successCheck == true then
+        ply:ChatPrint("Лут в ящиках успешно прошел проверку")
     end
 end)
 
@@ -157,6 +181,7 @@ end
 
 hook.Add( "InitPostEntity", "rp.LootSystem.InitSpawn", function()
     SpawnLootContainers()
+    SpawnLootOnFloor()
 end)
 
 timer.Create("rp.LootSystem.RespawnTimer", rp.LootSystem.RespawnTimer, 0, function()
@@ -374,6 +399,8 @@ function SpawnRocks()
 end
 
 function SpawnRadEnts()
+    if not rp.LootSystem.RadEnts then return end
+
     for key, info in pairs(rp.LootSystem.RadEnts) do
         if info.ent then 
             info.ent:Remove()
