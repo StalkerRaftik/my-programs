@@ -1,0 +1,6 @@
+{
+  "name": "MiniApps2",
+  "dependencies": {
+    "@vkontakte/vkui": "^4.7.0"
+  }
+}
