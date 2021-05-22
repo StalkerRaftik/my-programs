@@ -23,7 +23,7 @@ class Point:
         self.exist = exist
 
     def Create(self):
-        if wmap[x][y] != "-"
+        if wmap[x][y] != "-":
             return
         else:
             if bool == True:
@@ -43,6 +43,7 @@ class Point:
         else:
             potentElements.remove(point)
 
+
 # Карта.
 wmap = [['-'] * cube_amount for i in range(cube_amount)]
 
@@ -51,7 +52,7 @@ potentElements = []
 
 
 def Create(x,y,bool):
-    if wmap[x][y] != "-"
+    if wmap[x][y] != "-":
         return
     else:
         if bool == True:

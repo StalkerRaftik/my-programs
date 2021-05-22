@@ -195,11 +195,6 @@ namespace _13042021_aho_corasick_algoritm
             
             Bor bor = new Bor();
             bor.FindSubs(StringToHandle, subs);
-
-
-            
-
-
         }
     }
 }

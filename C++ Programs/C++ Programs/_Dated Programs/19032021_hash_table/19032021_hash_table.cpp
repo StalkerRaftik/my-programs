@@ -13,14 +13,14 @@ class HashTable {
 private:
 	static const int SIZE = 2;
 	class TwoLinkedList {
-	private:
+	public:
 		// Иниц. элементов списка
 		struct listelem {
 			listelem* pred = nullptr; //Ссылка на следущий элемент списка
 			string value; // Информация элемента
 			listelem* next = nullptr; //Ссылка на следущий элемент списка
 		};
-
+	private:
 		// Иниц. дин. списка
 		struct dyn_list {
 			listelem* head; // Первый элемент (голова) списка
@@ -29,7 +29,6 @@ private:
 
 		dyn_list l;
 	public:
-
 		// Конструктор
 		TwoLinkedList() {
 			constr_list();
@@ -150,6 +149,7 @@ private:
 
 			return result;
 		}
+
 	};
 public:
 	TwoLinkedList tbl[SIZE];
@@ -181,6 +181,18 @@ public:
 		}
 	}
 
+	TwoLinkedList::listelem* Find(string str) {
+		int key = hashFunc(str);
+		if (tbl[key].FindElem(str) != nullptr) {
+			print("Element " + str + " found!");
+			return tbl[key].FindElem(str);
+		}
+		else {
+			print("Element " + str + " not found!");
+			return nullptr;
+		}
+	}
+		
 	void Remove(string str) {
 		int key = hashFunc(str);
 		int SuccessfulDelete = tbl[key].delete_elem(str);
@@ -218,7 +230,7 @@ int main()
 	string strin = "";
 	while (true) {
 		print("======Меню=====");
-		print("1 - добавить элемент\n2 - удалить элемент\n3 - вывести хэш-таблицу\n4 - очистить хэш-таблицу\n5 - выход");
+		print("1 - добавить элемент\n2 - удалить элемент\n3 - вывести хэш-таблицу\n4 - очистить хэш-таблицу\n5 - найти элемент\n6 - выйти");
 		cin >> input;
 		switch (input) {
 			case 1:
@@ -236,6 +248,11 @@ int main()
 				break;
 			case 4:
 				tbl.ClearHashTable();
+				break;
+			case 5:
+				print("Введите ключ:");
+				cin >> strin;
+				tbl.Find(strin);
 				break;
 		}
 	}

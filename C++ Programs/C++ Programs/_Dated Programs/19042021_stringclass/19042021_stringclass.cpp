@@ -5,7 +5,6 @@
 
 bool compareFunc(String str1, String str2)
 {
-
 	int length = str1.Length > str2.Length ? str2.Length : str1.Length;
 
 	char chr1;
@@ -14,25 +13,24 @@ bool compareFunc(String str1, String str2)
 		chr1 = str1[i];
 		chr2 = str2[i];
 
-		if ((int)chr1 > 64 && (int)chr1 < 91) {
-			chr1 = (char)+32;
+		if (chr1 > 64 && chr1 < 91) {
+			chr1 = (char)((int)chr1 + 32);
 		}
-		if ((int)chr2 > 64 && (int)chr2 < 91) {
-			chr2 = (char)+32;
+		if (chr2 > 64 && chr2 < 91) {
+			chr2 = (char)((int)chr2 + 32);
 		}
 
-		if ((int)chr1 > (int)chr2) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		if (chr1 != chr2)
+			return chr1 > chr2;
 	}
 
-	if (str1.Length == str2.Length)
+	if (str1.Length < str2.Length)
 		return false;
-	else
-		return length == str1.Length ? true : false;
+	else if (str1.Length > str2.Length) {
+		return true;
+	}
+
+	return false;
 }
 
 int main()
@@ -50,9 +48,11 @@ int main()
 		vec.push_back(String(input));
 	} while (std::cin.peek() != '\n');
 
+	compareFunc(vec[0], vec[1]);
+
 	std::sort(vec.begin(), vec.end(), compareFunc);
 
-	for (int i = 0; i < vec.size(); i++) {
+	for (size_t i = 0; i < vec.size(); i++) {
 		std::cout << vec[i] << '\n';
 	}
 

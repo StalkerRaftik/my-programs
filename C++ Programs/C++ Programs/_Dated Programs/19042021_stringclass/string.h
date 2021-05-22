@@ -72,6 +72,7 @@ public:
 
 		this->Clear();
 		this->CreateString(newString, strlen(newString));
+		delete[] newString;
 
 		return *this;
 	}
@@ -148,6 +149,7 @@ String operator+(String& str1, const String& str2) {
 
 	str1.Clear();
 	str1.CreateString(newString, strlen(newString));
+	delete[] newString;
 
 	return str1;
 }
@@ -164,6 +166,7 @@ String operator+(String& str1, const char& chr) {
 
 	str1.Clear();
 	str1.CreateString(newString, strlen(newString));
+	delete[] newString;
 
 	return str1;
 }

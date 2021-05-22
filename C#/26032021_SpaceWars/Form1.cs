@@ -5,9 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
+
 
 namespace _26032021_SpaceWars
 {
@@ -163,8 +165,6 @@ namespace _26032021_SpaceWars
         long GiantShipShootDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 20000;
         public async Task IntrudersLogicProcessing()
         {
-            Debug.Text = Intruders.Count.ToString();
-
             //----------Обработка движения пришельцев, выстрелов--------
             for (int i = 0; i < Intruders.Count; i++)
             {
@@ -430,7 +430,7 @@ namespace _26032021_SpaceWars
 
 
             //-----------------------------------------------
-            //----------Объявление глобальных переменных-----
+            //----------Объявление переменных----------------
             //-----------------------------------------------
             Graphics g = e.Graphics;
 
@@ -438,39 +438,47 @@ namespace _26032021_SpaceWars
             //-----------------------------------------------
             //---Мультипоток функций отрисовки, логики игры--
             //-----------------------------------------------
-            var DrawingObjectsTask = DrawObjects(g);
-            List<Task> Tasks = new List<Task> { DrawingObjectsTask };
+
+            DrawObjects(g);
+
+            //List<Task> Tasks = new List<Task> { DrawObjects(g) };
             if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > KeyboardDelay)
             {
                 KeyboardDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 16;
-
-                var MainLogicProcessingTask = MainLogicProcessing();
-                
-                var ProjectileProcessingTask = ProjectileProcessing();
-                Tasks.Add(MainLogicProcessingTask);
-                
-                Tasks.Add(ProjectileProcessingTask);
+                MainLogicProcessing(); // 0.001
+                ProjectileProcessing(); // Время 0.003
+                //Tasks.Add(MainLogicProcessing());  
+                //Tasks.Add(ProjectileProcessing());
             }
 
             if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > HeavyLogicDelay)
             {
                 HeavyLogicDelay = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 32;
-
-                var IntrudersLogicProcessingTask = IntrudersLogicProcessing();
-                Tasks.Add(IntrudersLogicProcessingTask);
+                //Tasks.Add(IntrudersLogicProcessing());
+                IntrudersLogicProcessing(); // 0.1 - 0.03
             }
 
-            while (Tasks.Count > 0)
-            {
-                Task finishedTask = await Task.WhenAny(Tasks);
-                Tasks.Remove(finishedTask);
-            }
+            //await Task.WhenAll(Tasks);
 
             this.Background.Invalidate();
         }
 
         private void Background_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void DebugFunc(Func<Task> DebugFunction)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            DebugFunction();
+            stopWatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopWatch.Elapsed;
+
+
+            Debug.Text = "RunTime " + ts.TotalMilliseconds.ToString();
 
         }
     }
