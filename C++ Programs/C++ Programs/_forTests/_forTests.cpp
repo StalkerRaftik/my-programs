@@ -1,20 +1,35 @@
 ﻿#include <iostream>
+#include <vector>
+#include <random>
+#include <time.h>
+#include <algorithm>
+#include <stdlib.h>     /* abs */
 
 using namespace std;
 
+bool sortc(float a, float b) {
+	return abs(a) > abs(b);
+}
+
 int main() {
+	vector<float> a;
 
-	double a, b, c;
+	float firstnum = 4.0 / 7.0;
+	float secondsnum = -49.0 / 64.0;
+	float mult = firstnum * secondsnum;
 
-	cin >> a >> b;
+	a.push_back(4.0 / 7.0);
+	a.push_back(-49.0 / 64.0);
 
-	__asm { // 27*4 - 11*2
-		fld a // Помещаем значение a в стек(называется FPU aka математический сопроцессор. нужен для калькуляции вещественных чисел) 
-		fld b // помещаем знач b в стек FPU
-		fdiv // Делим. 
-		fsin // Находим синус от деления
-		fabs // Находим модуль от синуса
-		fst a // Извлекаем из стека полученный результат, записываем в a
+	srand(time(0));
+
+	for (int i = 0; i < 10000000; i++) {
+		float n1 = a[rand() % a.size()];
+		float n2 = a[rand() % a.size()];
+		n1 = n1 * n2;
+		a.push_back(n1);
 	}
-	cout << a;
+
+	sort(a.begin(), a.end(), sortc);
+
 }

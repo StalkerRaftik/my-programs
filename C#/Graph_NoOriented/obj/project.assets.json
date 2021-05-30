@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Important\\Studying\\my-programs\\C#\\21_05_21_GraphList\\21_05_21_GraphList.csproj",
-      "projectName": "21_05_21_GraphList",
-      "projectPath": "C:\\Important\\Studying\\my-programs\\C#\\21_05_21_GraphList\\21_05_21_GraphList.csproj",
+      "projectUniqueName": "C:\\Important\\Studying\\my-programs\\C#\\Graph_NoOriented\\Graph_NoOriented.csproj",
+      "projectName": "Graph_NoOriented",
+      "projectPath": "C:\\Important\\Studying\\my-programs\\C#\\Graph_NoOriented\\Graph_NoOriented.csproj",
       "packagesPath": "C:\\Users\\monst\\.nuget\\packages\\",
-      "outputPath": "C:\\Important\\Studying\\my-programs\\C#\\21_05_21_GraphList\\obj\\",
+      "outputPath": "C:\\Important\\Studying\\my-programs\\C#\\Graph_NoOriented\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\monst\\AppData\\Roaming\\NuGet\\NuGet.Config",
