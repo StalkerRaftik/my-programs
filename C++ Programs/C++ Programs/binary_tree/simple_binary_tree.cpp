@@ -2,6 +2,9 @@
 #include <string>
 #include <cmath>
 #include <math.h>
+#include <vector>
+#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -11,7 +14,7 @@ using namespace std;
 struct elem {
     elem* left = nullptr; // Левый потомок
     elem* right = nullptr; // Правый потомок
-    int info; // Ключ узла
+    int info = -1; // Ключ узла
 };
 
 
@@ -119,6 +122,7 @@ elem* GetParent(tree& tree, elem* child) {
 // Формальные и входные параметры - дерево, корень дерева
 // Выходные данные - нет
 void ClearTree(tree& tree, elem* el) {
+    if (el == nullptr) return;
     if (el->left != nullptr) ClearTree(tree, el->left);
     if (el->right != nullptr) ClearTree(tree, el->right);
 
@@ -284,17 +288,69 @@ void print_NeterSqrt(elem*& head) {
     }
 }
 
+void FindByInterval(vector<elem*>& result, elem* head, int from, int to) {
+    if (head == nullptr) return;
+
+    stack<elem*> st;
+    st.push(head);
+    
+    // Поиск ближайшего к левой границе
+    elem* NearMinElem = nullptr;
+    while (!st.empty())
+    {
+        elem* curEl = st.top();
+        st.pop();
+
+        if (curEl->left != nullptr)
+            st.push(curEl->left);
+        if (curEl->right != nullptr)
+            st.push(curEl->right);
+
+        if (curEl->info == from) {
+            NearMinElem = curEl;
+            break;
+        }
+        else if (curEl->info > from) {
+            if (NearMinElem == nullptr) {
+                NearMinElem = curEl;
+            } 
+            else if (curEl->info < NearMinElem->info) {
+                NearMinElem = curEl;
+            }
+        }
+    }
+    if (NearMinElem == nullptr) return; // Если все элементы меньше левой границы, то все
+    if (NearMinElem->info > to) return; // Если минимум больше максимума
+
+    st = stack<elem*>(); // Очищаем стэк
+    st.push(head);
+    while (!st.empty()) // Пробегаем дерево в справа налево. Если >= левой границе, то добавляем в result
+    {
+        elem* curEl = st.top();
+        st.pop();
+
+        if (curEl->right != nullptr)
+            st.push(curEl->right);
+        if (curEl->left != nullptr)
+            st.push(curEl->left);
+
+        if (curEl->info >= NearMinElem->info && curEl->info <= to)
+            result.push_back(curEl);
+    }
+}
 
 
 int main() {
     setlocale(LC_ALL, "Russian");
     int input;
+    int input2;
     tree tree;
+    vector<elem*> vector_elems;
     bool end = false;
-    int keysamount = 7;
+    int keysamount = 8;
 
     while (end != true) {
-        cout << "1 - добавить новый элемент\n2 - удалить элемент\n3 - очистить дерево\n4 - вывести дерево\n5 - найти элемент\n6 - найти минимальный элемент дерева.\n7 - выйти\n";
+        cout << "1 - добавить новый элемент\n2 - удалить элемент\n3 - очистить дерево\n4 - вывести дерево\n5 - найти элемент\n6 - найти минимальный элемент дерева.\n7 - Найти элементы по интервалу\n8 - выйти\n";
         int userkey = -1;
         cin >> userkey;
         while (userkey < 1 || userkey > keysamount) {
@@ -349,6 +405,17 @@ int main() {
             cout << endl;
             break;
         case 7:
+            cout << "Введите левую границу: ";
+            cin >> input;
+            cout << "Введите правую границу: ";
+            cin >> input2;
+            FindByInterval(vector_elems, tree.head, input, input2);
+            cout << "Найденные значения:\n";
+            for (int i = 0; i < vector_elems.size(); i++) {
+                cout << vector_elems[i]->info << endl;
+            }
+            break;
+        case 8:
             end = true;
             break;
         }

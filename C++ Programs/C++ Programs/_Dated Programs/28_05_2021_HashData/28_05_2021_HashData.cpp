@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 #include <fstream>
-#include "../print.h"
+#include "print.h"
 
 using namespace std;
 
@@ -14,9 +14,9 @@ using namespace std;
 
 class HashTable {
 private:
-	static const int SIZE = 10;
-	int hashMode = 1;
+	static const int SIZE = 50;
 public:
+	int ModeForhash = 1;
 	struct Data
 	{
 		string Name = "";
@@ -24,16 +24,17 @@ public:
 		int JoinYear = -1;
 	};
 
-	 list<Data> tbl[SIZE];
+	 list<Data> Table[SIZE];
 
-
-	 int hashFunc(Data dt) {
+	 int hashFunction(Data dt) {
 		 int hash = 0;
-		 switch (this->hashMode) {
-			case 1:
-				hash = hashFunc1(dt);
-			case 2:
-				hash = hashFunc2(dt);
+		 switch (this->ModeForhash) {
+		 case 1:
+			 hash = hashFunc1(dt);
+			 break;
+		 case 2:
+			 hash = hashFunc2(dt);
+			 break;
 		 }
 		 return hash;
 	 }
@@ -54,54 +55,61 @@ public:
 		 return key % SIZE;
 	 }
 
-	// Хэш-функция середина квадрата
-	int hashFunc1(Data dt) {
-		int key = 0;
+	 // Хэш-функция метод свертывания
+	 int hashFunc1(Data dt) {
+		 int key = 0;
 
-		for (char ch : dt.Name) {
-			key += (int)ch;
-		}
+		 for (char ch : dt.Name) {
+			 key += (int)ch;
+		 }
 
-		for (char ch : dt.Position) {
-			key += (int)ch;
-		}
-		key += dt.JoinYear;
+		 for (char ch : dt.Position) {
+			 key += (int)ch;
+		 }
+		 key += dt.JoinYear;
 
-		key = key * key;
-		key = key >> 11; // Отбрасываем 11 младших бит
-		key = key % 1024; // Возвращаем 10 младших бит
+		 int sum = 1;
+		 while (SIZE > (int)pow(10, sum)) sum++;
 
-		return key % SIZE;
-	}
+		 int finalKey = 0;
+		 while (key > 0) {
+			 for (int i = 0; i <= sum; i++) {
+				 finalKey += key % (int)pow(10, sum);
+				 key = key / (int)pow(10, sum);
+			 }
+		 }
+
+		 return finalKey % SIZE;
+	 }
 
 	void Add(Data dt) {
-		int key = hashFunc(dt);
+		int key = hashFunction(dt);
 
 
-		this->tbl[key].push_back(dt);
+		this->Table[key].push_back(dt);
 	}
 
-	Data* Find(Data dt) {
-		int key = hashFunc(dt);
-		list<Data> l = this->tbl[key];
+	void Find(Data dt) {
+		int key = hashFunction(dt);
+		list<Data> l = this->Table[key];
 		
-		for (auto iter = l.begin(); iter != l.end(); ++iter) {
+		for (std::list<Data>::iterator iter = l.begin(); iter != l.end(); ++iter) {
 			Data dt2 = (*iter);
 			if (dt.JoinYear == dt2.JoinYear && dt.Name == dt2.Name && dt.Position == dt2.Position) {
-				return &(*iter);
+				print("Хэш:" + to_string(hashFunction(dt)) + ", " + dt.Name + ", должность: " + dt.Position + ", принят на работу в " + to_string(dt.JoinYear) + " году.");
+				return;
 			}
 		}
-
-		return nullptr;
+		print("Элемент не был найден!");
 	}
 
 	void Remove(Data dt) {
-		int key = hashFunc(dt);
-		list<Data> l = this->tbl[key];
-		for (auto iter = l.begin(); iter != l.end(); ++iter) {
+		int key = hashFunction(dt);
+		list<Data>* l = &(this->Table[key]);
+		for (auto iter = (*l).begin(); iter != (*l).end(); ++iter) {
 			Data dt2 = (*iter);
 			if (dt.JoinYear == dt2.JoinYear && dt.Name == dt2.Name && dt.Position == dt2.Position) {
-				l.erase(iter);
+				(*l).erase(iter);
 				return;
 			}
 		}
@@ -109,18 +117,18 @@ public:
 
 	void ClearHashTable() {
 		for (int i = 0; i < SIZE; i++) {
-			tbl[i].clear();
+			Table[i].clear();
 		}
 	}
 
 	string getInfo() {
 		string output = "";
 		for (int i = 0; i < SIZE; i++) {
-			list<Data> l = this->tbl[i];
-			output += "=========   " + to_string(i) + ":   =========\n";
+			list<Data> l = this->Table[i];
+			//output += "=========   " + to_string(i) + ":   =========\n";
 			for (auto iter =  l.begin(); iter != l.end(); ++iter) {
 				Data dt = (*iter);
-				output += "#" + to_string(hashFunc(dt)) + " | " + dt.Name + ", должность: " + dt.Position + ", принят на работу в " + to_string(dt.JoinYear) + " году.\n";
+				output += "Хэш:" + to_string(hashFunction(dt)) + ", " + dt.Name + ", должность: " + dt.Position + ", принят на работу в " + to_string(dt.JoinYear) + " году.\n";
 			}
 		}
 		return output;
@@ -132,11 +140,16 @@ public:
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	HashTable tbl;
+	HashTable Table;
 	int input = -2;
 	string strin = "";
 
-	ifstream fin("table.txt"); // создаём объект класса ofstream для записи и связываем его с файлом cppstudio.txt
+	print("Выберите хэш функцию:\n1 - метод свертывания\n2 - метод деления");
+	getline(cin, strin);
+	input = stoi(strin);
+	Table.ModeForhash = input;
+
+	ifstream fin("table.txt");
 		while (!fin.eof()) {
 			getline(fin, strin);
 
@@ -153,19 +166,19 @@ int main()
 			words.push_back(word);
 
 			HashTable::Data dt;
-			dt.Name = words[0] + words[1];
+			dt.Name = words[0] + " " + words[1];
 			for (int i = 2; i < words.size()-1; i++)
 				dt.Position += words[i] + " ";
-			dt.Position[dt.Position.size() - 1] = '\0';
+			dt.Position.erase(dt.Position.size() - 1);
 			dt.JoinYear = stoi(words[words.size()-1]);
 
-			tbl.Add(dt);
+			Table.Add(dt);
 		}
-	fin.close(); // закрываем файл
+	fin.close();
 
 
 	while (input != -1) {
-		print("======Меню=====");
+		print("меню");
 		print("1 - добавить элемент\n2 - удалить элемент\n3 - вывести хэш-таблицу\n4 - очистить хэш-таблицу\n5 - найти элемент\n6 - выйти");
 		getline(cin, strin);
 		input = stoi(strin);
@@ -185,7 +198,7 @@ int main()
 				getline(cin, strin);
 				dt.JoinYear = stoi(strin);
 			
-				tbl.Add(dt);
+				Table.Add(dt);
 				break;
 			}
 			case 2: {
@@ -203,14 +216,14 @@ int main()
 				getline(cin, strin);
 				dt.JoinYear = stoi(strin);
 
-				tbl.Remove(dt);
+				Table.Remove(dt);
 				break;
 			}
 			case 3:
-				print(tbl.getInfo());
+				print(Table.getInfo());
 				break;
 			case 4:
-				tbl.ClearHashTable();
+				Table.ClearHashTable();
 				break;
 			case 5: {
 				HashTable::Data dt;
@@ -226,9 +239,8 @@ int main()
 				print("Введите год принятия на работу:");
 				getline(cin, strin);
 				dt.JoinYear = stoi(strin);
-
-				tbl.Find(dt);
-
+				 
+				Table.Find(dt);
 				break;
 			}
 			case 6: {

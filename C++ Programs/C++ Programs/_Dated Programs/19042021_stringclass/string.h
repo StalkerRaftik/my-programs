@@ -4,8 +4,11 @@
 class String {
 private:
 	char* Mas = nullptr;
+	int Length = 0;
 
-	void CreateString(const char* str, int Length) {
+	void ReplaceString(const char* str, int Length) {
+		this->Clear();
+
 		this->Length = Length;
 		this->Mas = new char[Length + 1];
 
@@ -16,20 +19,26 @@ private:
 	}
 
 public:
-	int Length = 0;
-
 	// Constructors
 	String() {}
 
 	String(const char* str) noexcept
 	{
-		this->CreateString(str, strlen(str));
+		this->ReplaceString(str, strlen(str));
 	}
 
 	// Copy constructor
 	String(const String& ref_String) noexcept
 	{
-		this->CreateString(ref_String.Mas, strlen(ref_String.Mas));
+		this->ReplaceString(ref_String.Mas, strlen(ref_String.Mas));
+	}
+
+	// Move constructor
+	String(const String&& ref_String) 
+		: Mas(ref_String.Mas)
+		, Length()
+	{
+		this->ReplaceString(ref_String.Mas, strlen(ref_String.Mas));
 	}
 
 	// Destructor
@@ -49,6 +58,10 @@ public:
 		std::cout << "\n";
 	}
 
+	int GetLength() {
+		return this->Length;
+	}
+
 	void Clear() {
 		if (Mas == nullptr) return;
 
@@ -57,10 +70,11 @@ public:
 		this->Length = 0;
 	}
 
-	String operator+(const char* str) {
+	String& operator+(const char* str) {
 		int ScndPartLength = strlen(str);
 
-		char* newString = new char[this->Length + ScndPartLength + 1];
+		int newLength = this->Length + ScndPartLength + 1;
+		char* newString = new char[newLength];
 
 		for (int i = 0; i < this->Length; i++) {
 			newString[i] = this->Mas[i];
@@ -71,8 +85,8 @@ public:
 		newString[this->Length + ScndPartLength] = '\0';
 
 		this->Clear();
-		this->CreateString(newString, strlen(newString));
-		delete[] newString;
+		this->Length = newLength;
+		this->Mas = newString;
 
 		return *this;
 	}
@@ -106,16 +120,16 @@ public:
 	}
 
 	// Assignment operator
-	String& operator= (const String& ref_String)
+	String& operator= (const String& other)
 	{
-		this->CreateString(ref_String.Mas, strlen(ref_String.Mas));
-
+		if (this != &other) {
+			this->ReplaceString(other.Mas, strlen(other.Mas));
+		}
 		return *this;
 	}
 
-	String operator=(const char* str) {
-		this->Clear();
-		this->CreateString(str, strlen(str));
+	String& operator=(const char* str) {
+		this->ReplaceString(str, strlen(str));
 
 		return *this;
 	}
@@ -148,7 +162,7 @@ String operator+(String& str1, const String& str2) {
 
 
 	str1.Clear();
-	str1.CreateString(newString, strlen(newString));
+	str1.ReplaceString(newString, strlen(newString));
 	delete[] newString;
 
 	return str1;
@@ -165,7 +179,7 @@ String operator+(String& str1, const char& chr) {
 
 
 	str1.Clear();
-	str1.CreateString(newString, strlen(newString));
+	str1.ReplaceString(newString, strlen(newString));
 	delete[] newString;
 
 	return str1;

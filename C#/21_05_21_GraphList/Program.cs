@@ -199,6 +199,7 @@ namespace _21_05_21_GraphList
 
         public void FloydMinPathMatrix()
         {
+            // Обработать петли
             Dictionary<int, Dictionary<int, int>> Matrix = new Dictionary<int, Dictionary<int, int>>();
 
             // Собираем изначальную матрицу смежности с минимальными весами.
@@ -229,10 +230,9 @@ namespace _21_05_21_GraphList
                     else if (Matrix[CurNode][mover.Node] > mover.Weight)
                         Matrix[CurNode][mover.Node] = mover.Weight;
 
-                    // Если мой граф работает идеально - это условие не требуется(99.9% что не требуется).
-                    // Но пусть будет, на всякий случай. ЧФ - человеческий фактор
-                    if (!Matrix.ContainsKey(mover.Node))
-                        Matrix.Add(mover.Node, new Dictionary<int, int>());
+                    // Если мой граф работает как надо - это условие не требуется(99.9% что не требуется).
+                    //if (!Matrix.ContainsKey(mover.Node))
+                    //    Matrix.Add(mover.Node, new Dictionary<int, int>());
 
                     mover = mover.Next;
                 }
@@ -282,7 +282,9 @@ namespace _21_05_21_GraphList
                 {
                     int i = _I.Key;
 
-                    if (Matrix[i].ContainsKey(j))
+                    if (i == j)
+                        str += "X   ";
+                    else if (Matrix[i].ContainsKey(j))
                         str += Matrix[i][j] + "   ";
                     else
                         str += "inf ";

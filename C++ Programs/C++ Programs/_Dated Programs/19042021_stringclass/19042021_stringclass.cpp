@@ -3,6 +3,7 @@
 #include <algorithm> 
 #include "string.h"
 
+// Лексикографическая сортировка(без учета регистра)
 bool compareFunc(String str1, String str2)
 {
 	int length = str1.Length > str2.Length ? str2.Length : str1.Length;
@@ -26,9 +27,8 @@ bool compareFunc(String str1, String str2)
 
 	if (str1.Length < str2.Length)
 		return false;
-	else if (str1.Length > str2.Length) {
+	else if (str1.Length > str2.Length)
 		return true;
-	}
 
 	return false;
 }
